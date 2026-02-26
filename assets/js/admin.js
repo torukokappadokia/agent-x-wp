@@ -1,6 +1,10 @@
 jQuery(document).ready(function($) {
     $('#check-btn').on('click', function() {
-        $('#status').html('Kontrol ediliyor...').removeClass();
+        var $btn = $(this);
+        var $status = $('#status');
+        
+        $btn.prop('disabled', true).text('Kontrol ediliyor...');
+        $status.removeClass('success error').html('⏳ Bağlantı kontrol ediliyor...').show();
         
         $.ajax({
             url: agentx_ajax.url,
@@ -11,13 +15,16 @@ jQuery(document).ready(function($) {
             },
             success: function(response) {
                 if (response.success) {
-                    $('#status').html('✅ ' + response.data).addClass('success');
+                    $status.html('✅ ' + response.data).addClass('success');
                 } else {
-                    $('#status').html('❌ ' + response.data).addClass('error');
+                    $status.html('❌ ' + response.data).addClass('error');
                 }
             },
             error: function() {
-                $('#status').html('❌ Sunucu hatası').addClass('error');
+                $status.html('❌ Sunucu hatası oluştu').addClass('error');
+            },
+            complete: function() {
+                $btn.prop('disabled', false).text('Bağlantıyı Kontrol Et');
             }
         });
     });
