@@ -6,6 +6,8 @@
  * Version: 0.1.0
  * Author: torukokappadokia
  * License: GPL v3 or later
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
+ * Text Domain: agent-x
  * Requires at least: 5.8
  * Requires PHP: 7.4
  */
@@ -76,10 +78,13 @@ class AgentX_Core {
         $response = wp_remote_get('http://localhost:11434/api/tags', array('timeout' => 5));
         
         if (is_wp_error($response)) {
-            wp_send_json_error('Ollama çalışmıyor');
+            wp_send_json_error('Ollama çalışmıyor. Kurulum: https://ollama.com');
         }
         
-        wp_send_json_success('Bağlandı!');
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+        $models = isset($body['models']) ? count($body['models']) : 0;
+        
+        wp_send_json_success($models . ' model bulundu. Bağlantı aktif!');
     }
 }
 
